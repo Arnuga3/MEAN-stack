@@ -1,0 +1,7 @@
+#loginContainer {
+    max-width: 350px;
+    background-color: lightgrey;
+    text-align: center;
+    margin: auto;
+    padding: 10px;
+}
