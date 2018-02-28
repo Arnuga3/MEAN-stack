@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Register } from './Register';
+import { User } from './../User';
 
 @Component({
   selector: 'app-register',
@@ -8,10 +8,11 @@ import { Register } from './Register';
 })
 export class RegisterComponent implements OnInit {
   
-  register: Register = {
+  regUser: User = {
+    id: '',
     email: '',
     username: '',
-    passport: ''
+    password: ''
   }
 
   constructor() { }

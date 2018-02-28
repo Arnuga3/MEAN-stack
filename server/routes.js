@@ -29,7 +29,7 @@ module.exports = app => {
     console.log('authentication...')
     // Find a user by the username
     User.findOne({
-      username: req.query.username
+      username: req.body.username
     }).select('_id username password').exec(function (err, user) {
       if (err) throw err
       // A user with that username not found
@@ -40,7 +40,7 @@ module.exports = app => {
         })
       } else if (user) {
         // Check if password matches
-        var validPassword = user.comparePassword(req.query.password)
+        var validPassword = user.comparePassword(req.body.password)
         // Password doesn't match
         if (!validPassword) {
           res.json({
@@ -77,9 +77,9 @@ module.exports = app => {
   .post(authRequired, function (req, res) {
     // Create a new User instance
     var user = new User()
-    user.name = req.query.name
-    user.username = req.query.username
-    user.password = req.query.password
+    user.name = req.body.name
+    user.username = req.body.username
+    user.password = req.body.password
     // Save to db
     user.save(function (err) {
       if (err) {
