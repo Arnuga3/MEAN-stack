@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './../user.service';
-import { User } from './../User';
+import { UserService } from './../../services/user.service';
+import { User } from './../../User';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +15,9 @@ export class LoginComponent implements OnInit {
     username: '',
     password: ''
   }
+  
+  title: string = 'Welcome to MPGame';
+  subtitle: string = 'Your time killer.';
 
   constructor( private userService: UserService ) { }
 
@@ -25,5 +28,4 @@ export class LoginComponent implements OnInit {
     console.log('login form submitted')
     this.userService.loginUser(this.loginUser)
   }
-
 }

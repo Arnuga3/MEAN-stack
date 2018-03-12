@@ -1,7 +1,10 @@
 #loginContainer {
     max-width: 350px;
-    background-color: lightgrey;
+    background-color: #cfd8dc;
     text-align: center;
     margin: auto;
     padding: 10px;
+}
+h1 {
+    font-family: 'Bangers', cursive;
 }

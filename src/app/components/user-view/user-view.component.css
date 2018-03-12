@@ -1,0 +1,41 @@
+.uvCont {
+    background-color: white;
+    max-width: 350px;
+    box-shadow: 0px 0px 10px grey;
+    padding: 40px 20px;
+}
+.grid-container {
+    display: grid;
+    grid-gap: 10px;
+}
+.grid-container > div {
+    display: flex;
+    justify-content: center;
+}
+.item1 {
+    grid-area: 1 / 1 / 2 / 7;
+}
+.item7 {
+    padding: 15px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    grid-area: 2 / 2 / 5 / 6;
+}
+.item7 img {
+    max-width: 100px;
+    max-height: 200px;
+}
+
+.cell {
+    width: 75px;
+    height: 75px;
+    background-color: rgba(0,0,0,.1);
+    box-shadow: 0px 0px 10px grey inset;
+    border: 1px solid rgba(0,0,0,.3);
+    border-radius: 2px;
+}
+
+.activeCell {
+    background-color: lightskyblue;
+}

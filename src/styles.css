@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Bangers');
 /* You can add global styles to this file, and also import other style files */
 body {
-    background-image: url('./assets/paper.jpg');
+    /*background-image: url('./assets/paper.jpg');*/
+}
+
+.jumbotron {
+    background-color: #0288d1 !important;
+    color: white;
 }

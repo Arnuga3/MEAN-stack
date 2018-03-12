@@ -59,6 +59,7 @@ module.exports = app => {
           res.json({
             success: true,
             message: 'Here is your token.',
+            userId: user._id,
             token: 'JWT ' + token
           })
         }
@@ -71,15 +72,22 @@ module.exports = app => {
     res.json({ message: 'Hello' })
   })
 
+  apiRouter.get('/user/:id', authRequired, function (req, res) {
+    User.findById(req.params.id, (err, user) => {
+      if (err) return res.status(500).send(err)
+      res.json(user)
+    })
+  })
+
   // Routes /api/users
   apiRouter.route('/users')
   // POST /api/users - save a new user
-  .post(authRequired, function (req, res) {
+  .post(function (req, res) {
     // Create a new User instance
     var user = new User()
-    user.name = req.body.name
-    user.username = req.body.username
-    user.password = req.body.password
+    user.email = req.query.email
+    user.username = req.query.username
+    user.password = req.query.password
     // Save to db
     user.save(function (err) {
       if (err) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from './../User';
+import { User } from './../../User';
 
 @Component({
   selector: 'app-register',
@@ -14,6 +14,8 @@ export class RegisterComponent implements OnInit {
     username: '',
     password: ''
   }
+  title: string = 'Welcome to MPGame';
+  subtitle: string = 'Register with us and enjoy the game.';
 
   constructor() { }
 
