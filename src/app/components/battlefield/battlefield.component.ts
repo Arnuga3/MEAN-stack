@@ -26,6 +26,7 @@ export class BattleFieldComponent implements OnInit {
     this.generateRandomShips()
   }
 
+  // Creates ships
   generateRandomShips() {
     // Removing old ships
     this.shipsAll = []
@@ -35,81 +36,71 @@ export class BattleFieldComponent implements OnInit {
     this.saveShip(this.createShip(2))
     this.saveShip(this.createShip(3))
     this.saveShip(this.createShip(4))
-
-    // if intersect
   }
 
-  // Generating random number in range min-max(excluding)
+  // Getting random number in range min-max(excluding)
   _randomNum(min: number, max: number) {
     return Math.floor(Math.random() * (max - min) + min)
   }
-  // Getting random direction, accepting an array of directions need to be excluded
+
+  // Getting random direction
   _randomDirection() {
     let directions: string[] = ['top', 'right', 'bottom', 'left']
     return directions[this._randomNum(0, directions.length)]
   }
+
   // Generate ship cells starting from random point
   _getNextCells(len) {
     let startPoint = this._randomNum(0, this.battlefieldSize)
     let direction = this._randomDirection()
     var points = []
-    points.push(startPoint)
-    console.log(`Starting point ${startPoint}`)
+    points.push(startPoint) // Add first point (cell) of ship
     for (let i=0; i<len-1; i++) {
+      // Finding a next point and save it to array
       switch(direction) {
         case 'top':
           let top = points[i] - this.sideSize
-          // console.log(`top: ${top}`)
           points.push(top)
           break
         case 'right':
           let right = points[i] + 1
-          // console.log(`right: ${right}`)
           points.push(right)
           break
         case 'bottom':
           let bottom = points[i] + this.sideSize
-          // console.log(`bottom: ${bottom}`)
           points.push(bottom)
           break
         case 'left':
           let left = points[i] - 1
-          // console.log(`left: ${left}`)
           points.push(left)
           break
         default:
           console.log('default')
       }
     }
-    console.log(points)
-    return { points, direction }
+    return { points, direction }  // Returning generated ship points and direction
   }
-  // Validating the generated ship cells (boundaries of the battlefield)
+
+  // Checkin intersection of generated ship with map boundaries
   _areValid(obj) {
-    let points = obj.points
-    let direction = obj.direction
-    let startPoint = points[0]
-    console.log(`Starting point - validation: ${startPoint}`)
+    let points = obj.points         // ship points (cells)
+    let direction = obj.direction   // rigth/left/top/bottom
     for (let i=0; i<points.length-1; i++) {
       switch(direction) {
         case 'top':
           let top = points[i] - this.sideSize
-          // console.log(`top: ${top}`)
           if (top >= 0) continue
           else return false
         case 'right':
           let right = points[i] + 1
-          // console.log(`right: ${right}`)
           if (right % this.sideSize != 0) continue
           else return false
         case 'bottom':
           let bottom = points[i] + this.sideSize
-          // console.log(`bottom: ${bottom}`)
           if (bottom <= this.battlefieldSize) continue
           else return false
         case 'left':
           let left = points[i]
-          // console.log(`left: ${left}`)
           if (left % this.sideSize != 0) {
             continue
           } else {
@@ -120,68 +111,52 @@ export class BattleFieldComponent implements OnInit {
           console.log('default')
       }
     }
-    console.log(points)
-    return true
+    return true // Returning true if intersection is not detected
   }
 
+  // Checking intersection with points around the main point
   _intersect(point, arr) {
-    console.log(`_intersect - point: ${point}`)
-    console.log(`_intersect - arr[i]: ${arr}`)
     for (let i=0; i<arr.length; i++) {
       // Corners
-      // top left corner of point
-      if (point - this.sideSize - 1 == arr[i]) return true
-      // top right corner of point
-      if (point - this.sideSize + 1 == arr[i]) return true
-      // bottom left corner of point
-      if (point + this.sideSize - 1 == arr[i]) return true
-      // bottom right corner of point
-      if (point + this.sideSize + 1 == arr[i]) return true
+      if (point - this.sideSize - 1 == arr[i]) return true  // top left corner of point
+      if (point - this.sideSize + 1 == arr[i]) return true  // top right corner of point
+      if (point + this.sideSize - 1 == arr[i]) return true  // bottom left corner of point
+      if (point + this.sideSize + 1 == arr[i]) return true  // bottom right corner of point
       // Sides
-      // top of point
-      if (point - this.sideSize == arr[i]) return true
-      // right of point
-      if (point + 1 == arr[i]) return true
-      // bottom of point
-      if (point + this.sideSize == arr[i]) return true
-      // left of point
-      if (point - 1 == arr[i]) return true
+      if (point - this.sideSize == arr[i]) return true      // top of point
+      if (point + 1 == arr[i]) return true                  // right of point
+      if (point + this.sideSize == arr[i]) return true      // bottom of point
+      if (point - 1 == arr[i]) return true                  // left of point
     }
-    console.log(`_intersect - false`)
     return false
   }
 
+  // Checking intersection of point with points of previously created ships
   _doNotIntersect(point) {
-    // Getting created ship arrays
+    // Getting previously created ships saved in shipsArrAll array
     for (let i=0; i<this.shipsArrAll.length; i++) {
-      // Checking if point is intersecting with points of created ships
+      // Checking intersection
       if (this._intersect(point, this.shipsArrAll[i])) return false
     }
-    console.log(`_doNotIntersect - true`)
     return true                                                                                                                                                                                                                             
   }
 
   createShip(len: number) {
-    // Getting random ship
-    let points = this._getNextCells(len)
-    // Checking boundaries
-    if (this._areValid(points)) {
-      console.log(`intersection - Getting random ship points`)
-      // Getting random ship points
-      for (let i=0; i<points.points.length; i++) {
-        // Checking point intersection with points of created ships
+    let points = this._getNextCells(len)            // Getting just created ship
+    if (this._areValid(points)) {                   // Checking boundaries
+      for (let i=0; i<points.points.length; i++) {  // Getting last created ship points
+        // Checking interssection of all points from last created ship with previously created and saved ships
         if (!this._doNotIntersect(points.points[i])) return this.createShip(len)
       }
-      return points.points
-    }
-    // Running function again until conditions are met (recursion)
-    else return this.createShip(len)
+      return points.points                          // All conditions are met
+    } else return this.createShip(len)              // Running function again until conditions are met (recursion)
   }
 
-  // Saving a ship to array for all ships
+  // Saving a ship
   saveShip(ship) {
-    console.log(`SHIP TO SAVE ${ship}`)
+    // Adding as array - using for ship intersection check
     this.shipsArrAll.push(ship)
+    // Adding as numbers to one array - using for boundaries intersection check
     this.shipsAll.push(...ship)
   }
 
@@ -190,7 +165,7 @@ export class BattleFieldComponent implements OnInit {
     return this.shipsAll.includes(val)
   }
 
-  // Printing the number of the cell
+  // Printing number of cell
   print(i: number) {
     console.log(i)
   }
