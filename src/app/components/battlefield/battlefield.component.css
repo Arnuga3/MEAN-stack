@@ -1,28 +1,52 @@
 .field {
+    margin-top: 10px;
     display: flex;
     flex-flow: row wrap;
-    width: 502px;
+    width: 312px;
     border-radius: 3px;
+    position: relative;
+}
+.compassImg {
+    width: 32px;
+    position: absolute;
+    left: 4px;
+    z-index: 2;
 }
 .cell {
-    border: 1px dashed rgb(192, 227, 238);
-    background-color: rgb(76, 155, 187);
-    width: 50px;
-    height: 50px;
+    border: 1px dashed rgb(117, 116, 104) /*rgb(192, 227, 238)*/;
+    background-color: rgb(219, 213, 186) /*rgb(76, 155, 187)*/;
+    width: 39px;
+    height: 39px;
+    z-index: 1;
 }
 .cell:nth-child(2n) {
-    -ms-transform: skewY(8deg); /* IE 9 */
-    -webkit-transform: skewY(8deg); /* Safari 3-8 */
-    transform: skewY(8deg);
-}
-.cell:nth-child(2n + 1) {
     -ms-transform: skewY(-8deg); /* IE 9 */
     -webkit-transform: skewY(-8deg); /* Safari 3-8 */
     transform: skewY(-8deg);
+}
+.cell:nth-child(2n + 1) {
+    -ms-transform: skewY(8deg); /* IE 9 */
+    -webkit-transform: skewY(8deg); /* Safari 3-8 */
+    transform: skewY(8deg);
+    filter: brightness(80%)
 }
 .activeCell {
     background-color:rgb(192, 227, 238);
 }
 .shipCell {
-    background-color:rgb(77, 80, 83);
+    background-color:rgb(161, 140, 101);
+}
+
+@media (min-width: 576px) {
+    .field {
+        width: 562px;
+    }
+    .compassImg {
+        width: 62px;
+        left: 4px;
+    }
+    .cell {
+        width: 70px;
+        height: 70px;
+    }
 }

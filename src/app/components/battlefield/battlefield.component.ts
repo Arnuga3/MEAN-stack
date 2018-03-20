@@ -11,10 +11,10 @@ import { Cell } from '../../classes/Cell'
 
 export class BattleFieldComponent implements OnInit {
 
-  public sideSize:number = 10
+  public sideSize:number = 8
   public battlefield: number[] = new Array(this.sideSize * this.sideSize)
   public battlefieldSize: number = this.battlefield.length
-  public selectedCell: number = 0
+  public selectedCell: number
   // For boundary checks - format [cells of all]
   public shipsAll = []
   // For intersection checks - format [ [cells of one],[cells of one],[cells of one] ]
@@ -36,6 +36,10 @@ export class BattleFieldComponent implements OnInit {
     this.saveShip(this.createShip(2))
     this.saveShip(this.createShip(3))
     this.saveShip(this.createShip(4))
+  }
+
+  sendStartRequest() {
+    // Sending start game request to ws
   }
 
   // Getting random number in range min-max(excluding)

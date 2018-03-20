@@ -46,6 +46,10 @@ export class GamePortComponent implements OnInit {
     this.battlefield.generateRandomShips()
   }
 
+  sendStartRequest() {
+    this.battlefield.sendStartRequest()
+  }
+
   sendBattleRequest() {
     let battlefield = this.battlefield
   }

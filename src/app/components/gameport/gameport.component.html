@@ -1,4 +1,7 @@
 <div class="gameport">
     <app-battle></app-battle>
-    <button (click)="generateRandomShips()">random</button>
+    <div>
+        <button (click)="generateRandomShips()" class="btn btn-outline-light">Random Ships</button>
+        <button (click)="sendStartRequest()" class="btn btn-warning">START</button>
+    </div>
 </div>
