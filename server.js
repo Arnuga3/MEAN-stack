@@ -5,6 +5,7 @@ var path = require('path')
 var morgan = require('morgan')
 var mongoose = require('mongoose')
 var history = require('connect-history-api-fallback')
+var util = require('util')
 
 var configDB = require('./server/config/mongo')
 mongoose.connect(configDB.db)
@@ -41,15 +42,43 @@ var server = http.createServer(app)
 // Websocket
 var io = require('socket.io')(server)
 
-io.on('connection', socket => {
-  console.log('user connected')
-  console.log(`Socket ${socket.id} added`)
+// Game
+var battles = []
+var players = {}
+var Battle = require('./server/game/Battle')
+var Player = require('./server/game/Player')
 
-  socket.on('clientMessage', data => {
-    console.log(data)
-    socket.broadcast.emit('newMessage', {
-      message: 'not anymore/' + data.message
+io.on('connection', socket => {
+  console.log('new socket connection')
+
+  socket.on('setPlayer', data => {
+    let username = data.username
+    // Set socket id to username(username should be unique)
+    socket.id = username
+    if (players.hasOwnProperty(username)) {
+      delete players[username]
+      socket.emit('onSetPlayer', { message: `ws - ${username} reconnected` })
+    } else {
+      socket.emit('onSetPlayer', { message: `ws - ${username} connected` })
+    }
+    players[username] = socket
+    io.emit('notification', {
+      message: `ws - ${username} joined the game`
     })
+  })
+
+  socket.on('privateMessage', data => {
+    console.log(JSON.stringify(data))
+    let playersOnline = Object.keys(players).length
+    console.log(playersOnline)
+    // console.log(util.inspect(players))
+    let to = data.message.to
+    let from = data.message.from
+    if (to in players) {
+      players[to].emit('newMessage', {
+        message: `Hi from ${from}`
+      })
+    } else console.log(`ws - player ${to} is not connected`)
   })
 
   socket.on('disconnect', () => {

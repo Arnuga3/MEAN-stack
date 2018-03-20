@@ -9,20 +9,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './auth.interceptor';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
-import { GameComponent } from './components/game/game.component';
+import { GamePortComponent } from './components/gameport/gameport.component';
 import { RegisterComponent } from './components/register/register.component';
-import { UserViewComponent } from './components/user-view/user-view.component';
 import { UserService } from './services/user.service';
 import { WebSocketService } from './services/websocket.service';
+import { BattleFieldComponent } from './components/battlefield/battlefield.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    GameComponent,
+    GamePortComponent,
     RegisterComponent,
-    UserViewComponent
+    BattleFieldComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,5 @@
+<div class="field">
+  <div *ngFor="let cell of battlefield, index as i" class="cell"
+    (click)="selectedCell = i; print(i)" [class.activeCell]="selectedCell === i" [class.shipCell]="showShip(i)">
+  </div>
+</div>

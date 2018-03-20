@@ -1,5 +1,6 @@
 export interface AuthResponse {
-    userId: string,
+    success: boolean,
+    user: string,
     token: string,
     message: string
 }

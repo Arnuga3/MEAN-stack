@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from './../../User';
+import { UserService } from '../../services/user.service';
+import { User } from '../../classes/User';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   
-  regUser: User = {
-    id: '',
-    email: '',
-    username: '',
-    password: ''
-  }
+  regUser: User = new User
   title: string = 'Welcome to MPGame';
-  subtitle: string = 'Register with us and enjoy the game.';
+  subtitle: string = 'Register and enjoy BATTLESHIP game.';
 
-  constructor() { }
+  constructor( private userService: UserService ) { }
 
-  ngOnInit() {
+  onSubmit() {
+    // console.log('Registration form submitted')
+    // console.log(JSON.stringify(this.regUser))
+    this.userService.addUser(this.regUser)
   }
 
 }

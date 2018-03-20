@@ -27,10 +27,12 @@ module.exports = app => {
   // Authentication
   apiRouter.post('/authenticate', function (req, res) {
     console.log('authentication...')
+    console.log('body.username - ' + req.body.username)
+    console.log('query.username - ' + req.query.username)
     // Find a user by the username
     User.findOne({
       username: req.body.username
-    }).select('_id username password').exec(function (err, user) {
+    }).select('_id email username password').exec(function (err, user) {
       if (err) throw err
       // A user with that username not found
       if (!user) {
@@ -55,11 +57,18 @@ module.exports = app => {
             // Expires in 24 hours
             expiresIn: '24h'
           })
+
           // Return the information including token as JSON
           res.json({
             success: true,
             message: 'Here is your token.',
-            userId: user._id,
+
+            // User object fetched from DB, here can customise
+            user: JSON.stringify({
+              id: user._id,
+              username: user.username,
+              email: user.email
+            }),
             token: 'JWT ' + token
           })
         }
@@ -85,9 +94,9 @@ module.exports = app => {
   .post(function (req, res) {
     // Create a new User instance
     var user = new User()
-    user.email = req.query.email
-    user.username = req.query.username
-    user.password = req.query.password
+    user.email = req.body.email
+    user.username = req.body.username
+    user.password = req.body.password
     // Save to db
     user.save(function (err) {
       if (err) {
