@@ -5,12 +5,14 @@ var path = require('path')
 var morgan = require('morgan')
 var mongoose = require('mongoose')
 var history = require('connect-history-api-fallback')
-var util = require('util')
+// var util = require('util')
+require('dotenv').config()
+// mongoose.connect(`mongodb://localhost:27017`)
 
-var configDB = require('./server/config/mongo')
-mongoose.connect(configDB.db)
+mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ds223019.mlab.com:23019/warship`)
+// 3.6 driver mongodb+srv://<USER>:<PASSWORD>@cluster0-pii2f.mongodb.net/test
 
-var port = 8080
+var port = process.env.PORT || 8080
 var sockets = new Set()
 
 var app = express()

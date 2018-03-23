@@ -2,10 +2,9 @@ var express = require('express')
 var passport = require('passport')
 var jwt = require('jsonwebtoken')
 
-var configAuth = require('./config/auth')
 var User = require('.//models/user')
 
-const authRequired = passport.authenticate('jwt', { session: configAuth.session })
+const authRequired = passport.authenticate('jwt', { session: process.env.AUTH_SESSION })
 
 module.exports = app => {
   // Initialize passport
@@ -53,7 +52,7 @@ module.exports = app => {
           // Create a token
           var token = jwt.sign({
             id: user._id
-          }, configAuth.secret, {
+          }, process.env.AUTH_SECRET, {
             // Expires in 24 hours
             expiresIn: '24h'
           })
@@ -94,9 +93,9 @@ module.exports = app => {
   .post(function (req, res) {
     // Create a new User instance
     var user = new User()
-    user.email = req.body.email
-    user.username = req.body.username
-    user.password = req.body.password
+    user.email = req.query.email
+    user.username = req.query.username
+    user.password = req.query.password
     // Save to db
     user.save(function (err) {
       if (err) {
