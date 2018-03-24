@@ -10,7 +10,7 @@ export class WebSocketService {
   private socket: socketIO.Socket
 
   constructor() { 
-    this.socket = socketIO('http://localhost:8080')
+    this.socket = socketIO('https://warship.herokuapp.com/')
   }
 
   ///
