@@ -41,6 +41,7 @@ app.get('/', function (req, res) {
 require('./server/routes')(app)
 
 var server = http.createServer(app)
+  .listen(port, () => console.log(`Listening on ${port}`))
 // Websocket
 var io = require('socket.io')(server)
 
@@ -89,5 +90,3 @@ io.on('connection', socket => {
     console.log(`Remaining sockets: ${sockets.size}`)
   })
 })
-
-server.listen(port)
