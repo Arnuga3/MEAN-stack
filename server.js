@@ -12,7 +12,7 @@ require('dotenv').config()
 mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ds223019.mlab.com:23019/warship`)
 // 3.6 driver mongodb+srv://<USER>:<PASSWORD>@cluster0-pii2f.mongodb.net/test
 
-var port = process.env.PORT || 8080
+var port = process.env.PORT || 5000
 var sockets = new Set()
 
 var app = express()
