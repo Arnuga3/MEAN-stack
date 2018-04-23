@@ -2,7 +2,7 @@ var express = require('express')
 var passport = require('passport')
 var jwt = require('jsonwebtoken')
 
-var User = require('.//models/user')
+var User = require('./models/user')
 
 const authRequired = passport.authenticate('jwt', { session: process.env.AUTH_SESSION })
 

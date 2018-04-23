@@ -37,6 +37,10 @@
     background-color:rgb(161, 140, 101);
 }
 
+.shipGameCell {
+    background-color: black;
+}
+
 @media (min-width: 576px) {
     .field {
         width: 562px;

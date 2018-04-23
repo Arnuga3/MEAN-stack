@@ -12,9 +12,11 @@ import { Cell } from '../../classes/Cell'
 export class BattleFieldComponent implements OnInit {
 
   public sideSize:number = 8
-  public battlefield: number[] = new Array(this.sideSize * this.sideSize)
+  public battlefield = new Array(this.sideSize * this.sideSize)
   public battlefieldSize: number = this.battlefield.length
   public selectedCell: number
+  public actionBattleFieledOwn = []
+  public actionBattleFieledEnemy = []
   // For boundary checks - format [cells of all]
   public shipsAll = []
   // For intersection checks - format [ [cells of one],[cells of one],[cells of one] ]
@@ -36,10 +38,6 @@ export class BattleFieldComponent implements OnInit {
     this.saveShip(this.createShip(2))
     this.saveShip(this.createShip(3))
     this.saveShip(this.createShip(4))
-  }
-
-  sendStartRequest() {
-    // Sending start game request to ws
   }
 
   // Getting random number in range min-max(excluding)
@@ -164,13 +162,25 @@ export class BattleFieldComponent implements OnInit {
     this.shipsAll.push(...ship)
   }
 
+  showGameShip(val) {
+    if (this.battlefield[val] === 'O') return true
+    else return false
+  }
+
   // Using this function in view to display ship cells
   showShip(val) {
     return this.shipsAll.includes(val)
   }
 
+  // Send a cell number to attack
+  attack(i:number) {
+    const battleName = localStorage.getItem('battleRoom')
+    this.WSService.sendShot( { battleName, shot: i } )
+  }
+
   // Printing number of cell
   print(i: number) {
     console.log(i)
+    // console.log(this.shipsArrAll)
   }
 }

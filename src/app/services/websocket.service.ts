@@ -10,7 +10,7 @@ export class WebSocketService {
   private socket: socketIO.Socket
 
   constructor() { 
-    this.socket = socketIO('https://warship.herokuapp.com/')
+    this.socket = socketIO('http://localhost:8080/')
   }
 
   ///
@@ -22,9 +22,22 @@ export class WebSocketService {
     this.socket.emit('privateMessage', { message: { to: 'ad', from: 'as'} })
   }
 
+  // Send battleName and a cell number to attack
+  sendShot(n) {
+    this.socket.emit('attack', n)
+  }
+
   // Set player in ws
   setPlayerCon(username: string) {
     this.socket.emit('setPlayer', { username });
+  }
+
+  getUsersOnline() {
+    this.socket.emit('getUsersOnline');
+  }
+
+  sendGameRequest(userX) {
+    this.socket.emit('gameRequest', { userX })
   }
 
 
@@ -58,4 +71,29 @@ export class WebSocketService {
       });
     });
   }
+
+  onUsersOnline() {
+    return Observable.create(observer => {
+      this.socket.on('usersOnline', msg => {
+        observer.next(msg);
+      });
+    });
+  }
+
+  onBattleStarted() {
+    return Observable.create(observer => {
+      this.socket.on('battleStarted', msg => {
+        observer.next(msg);
+      });
+    });
+  }
+
+  onGameState() {
+    return Observable.create(observer => {
+      this.socket.on('gameState', msg => {
+        observer.next(msg);
+      });
+    });
+  }
+
 }
