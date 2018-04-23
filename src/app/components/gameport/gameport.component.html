@@ -4,4 +4,8 @@
         <button (click)="generateRandomShips()" class="btn btn-outline-light">Random Ships</button>
         <button (click)="sendStartRequest()" class="btn btn-warning">START</button>
     </div>
+    <span>Users online: {{ onlineUsersNum }}</span>
+    <div class="chat">
+        <div *ngFor="let msg of chatMsgs">{{ msg }}</div>
+    </div>
 </div>

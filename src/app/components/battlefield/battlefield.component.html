@@ -1,6 +1,6 @@
 <div class="field">
   <img class="compassImg" src="../../../assets/compass3.png" alt="compass" />
   <div *ngFor="let cell of battlefield, index as i" class="cell"
-    (click)="selectedCell = i; print(i)" [class.activeCell]="selectedCell === i" [class.shipCell]="showShip(i)">
+    (click)="selectedCell = i; attack(i)" [class.shipGameCell]="showGameShip(i)" [class.activeCell]="selectedCell === i" [class.shipCell]="showShip(i)">
   </div>
 </div>
