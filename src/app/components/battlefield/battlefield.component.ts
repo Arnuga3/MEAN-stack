@@ -13,19 +13,30 @@ export class BattleFieldComponent implements OnInit {
 
   public sideSize:number = 8
   public battlefield = new Array(this.sideSize * this.sideSize)
+  public battlefieldDisplay = new Array(this.sideSize * this.sideSize)
   public battlefieldSize: number = this.battlefield.length
-  public selectedCell: number
-  public actionBattleFieledOwn = []
-  public actionBattleFieledEnemy = []
+  public actBatField = []
+  public actBatFieldEnemy = new Array(this.sideSize * this.sideSize)
   // For boundary checks - format [cells of all]
   public shipsAll = []
   // For intersection checks - format [ [cells of one],[cells of one],[cells of one] ]
   public shipsArrAll = []
+  public canAttack = true
 
   constructor( private userService: UserService, public WSService: WebSocketService ) { }
 
   ngOnInit() {
     this.generateRandomShips()
+    this.populateBattlefield()
+  }
+
+  populateBattlefield () {
+    this.battlefield.fill('E', 0, this.battlefieldSize)
+    this.actBatFieldEnemy.fill('E', 0, this.battlefieldSize)
+    for (let c of this.shipsAll) {
+      this.battlefield[c] = 'S'
+    }
+    this.actBatField = this.battlefield
   }
 
   // Creates ships
@@ -38,6 +49,8 @@ export class BattleFieldComponent implements OnInit {
     this.saveShip(this.createShip(2))
     this.saveShip(this.createShip(3))
     this.saveShip(this.createShip(4))
+
+    this.populateBattlefield()
   }
 
   // Getting random number in range min-max(excluding)
@@ -163,7 +176,17 @@ export class BattleFieldComponent implements OnInit {
   }
 
   showGameShip(val) {
-    if (this.battlefield[val] === 'O') return true
+    if (this.battlefield[val] === 'S') return true
+    else return false
+  }
+
+  showGameBoom(val) {
+    if (this.battlefield[val] === 'B') return true
+    else return false
+  }
+
+  showGameNone(val) {
+    if (this.battlefield[val] === 'X') return true
     else return false
   }
 
@@ -174,8 +197,11 @@ export class BattleFieldComponent implements OnInit {
 
   // Send a cell number to attack
   attack(i:number) {
-    const battleName = localStorage.getItem('battleRoom')
-    this.WSService.sendShot( { battleName, shot: i } )
+    if (this.canAttack) {
+      console.log('ATTACK ' + this.canAttack)
+      const battleName = localStorage.getItem('battleRoom')
+      this.WSService.sendShot( { battleName, shot: i } )
+    }
   }
 
   // Printing number of cell

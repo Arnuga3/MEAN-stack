@@ -57,23 +57,38 @@ export class GamePortComponent implements OnInit {
     this.WSService.onBattleStarted().subscribe(msg => {
       console.log(msg.message)
       // Saving a battle name to LocalStorage
-      localStorage.setItem('battleRoom', msg.message.battle._name)
-      if (this.player.username === msg.message.battle._players[0].username) {
-        this.battlefield.actionBattleFieledOwn = msg.message.battle._players[0]._battleField
-        this.battlefield.actionBattleFieledEnemy = msg.message.battle._players[1]._battleField
+      localStorage.setItem('battleRoom', msg.message.battleName)
+      localStorage.setItem('playerIdx', msg.message.playerIdx)
+      let state = msg.message.state
+      let playerIdx = msg.message.playerIdx
+      // Is an attacker
+      if (playerIdx === state) {
+        this.battlefield.canAttack = true
+        this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
       } else {
-        this.battlefield.actionBattleFieledOwn = msg.message.battle._players[1]._battleField
-        this.battlefield.actionBattleFieledEnemy = msg.message.battle._players[0]._battleField
-      }
-      this.battlefield.shipsAll = []
-      if (this.player.username === msg.message.attacker) {
-
-      } else {
-        this.battlefield.battlefield = this.battlefield.actionBattleFieledOwn
+        this.battlefield.canAttack = false
+        this.battlefield.battlefield = this.battlefield.actBatField
       }
     })
     this.WSService.onGameState().subscribe(msg => {
       console.log(msg.message)
+      let attackResult = msg.message.attackResult
+      let state = msg.message.state
+      let playerIdx = msg.message.playerIdx
+      // Is an attacker
+      if (playerIdx === state) {
+        this.battlefield.actBatField[+attackResult.cell] = attackResult.symbol
+        this.battlefield.canAttack = true
+        setTimeout( () => { 
+         this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
+        }, 1500 )
+      } else {
+        this.battlefield.actBatFieldEnemy[+attackResult.cell] = attackResult.symbol
+        this.battlefield.canAttack = false
+        setTimeout( () => { 
+          this.battlefield.battlefield = this.battlefield.actBatField
+        }, 1500 )
+      }
     })
   }
 
@@ -97,12 +112,12 @@ export class GamePortComponent implements OnInit {
   // REQUESTS TO WEBSOCKET SERVICE
   ///
   sendStartRequest() {
-    let ships = this.battlefield.shipsAll
-    let userX = {
+    let battlefield = this.battlefield.battlefield
+    let player = {
       username: this.player.username,
-      ships: ships
+      ships: battlefield
     }
-    this.WSService.sendGameRequest(userX)
+    this.WSService.sendGameRequest(player)
   }
 
   setPlayerCon() {
