@@ -30,15 +30,17 @@
     transform: skewY(8deg);
     filter: brightness(80%)
 }
-.activeCell {
-    background-color:rgb(192, 227, 238);
-}
-.shipCell {
-    background-color:rgb(161, 140, 101);
+
+.cellShip {
+    background-color: rgb(161, 140, 101);
 }
 
-.shipGameCell {
-    background-color: black;
+.cellBoom {
+    background-color: rgb(197, 112, 79);
+}
+
+.cellNone {
+    background-color: rgb(75, 75, 75);
 }
 
 @media (min-width: 576px) {

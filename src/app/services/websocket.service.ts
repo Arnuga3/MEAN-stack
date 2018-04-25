@@ -36,8 +36,8 @@ export class WebSocketService {
     this.socket.emit('getUsersOnline');
   }
 
-  sendGameRequest(userX) {
-    this.socket.emit('gameRequest', { userX })
+  sendGameRequest(player) {
+    this.socket.emit('gameRequest', { player })
   }
 
 

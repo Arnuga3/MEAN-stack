@@ -50,7 +50,6 @@ var battles = []
 var players = {}
 var gameAwaitUsers = []
 var Battle = require('./server/game/Battle')
-var Player = require('./server/game/Player')
 
 io.on('connection', socket => {
   console.log('new socket connection')
@@ -58,25 +57,23 @@ io.on('connection', socket => {
 
 /* /// GAME REQUEST /// */
   socket.on('gameRequest', (data) => {
-    // console.log('check userX data: ' + JSON.stringify(data.userX))
-
     let isAlready = false
     // Check if player is already in a waiting list
-    for (let x in gameAwaitUsers) {
-      if (gameAwaitUsers[x].username === data.userX.username) {
+    for (let p of gameAwaitUsers) {
+      if (p.username === data.player.username) {
         isAlready = true
         console.log('is already')
       }
     }
     // Check if player is in a battle
-    for (let x in battles) {
-      if (battles[x].player[0].username === data.userX.username || battles[x].player[1].username === data.userX.username) {
+    for (let b of battles) {
+      if (b.player[0].username === data.player.username || b.player[1].username === data.player.username) {
         isAlready = true
         console.log('is already in a battle')
       }
     }
     // Add a user to a waiting array
-    if (!isAlready) gameAwaitUsers.push(data.userX)
+    if (!isAlready) gameAwaitUsers.push(data.player)
 
     // Put 2 players in a battle
     if (gameAwaitUsers.length >= 2) {
@@ -84,7 +81,7 @@ io.on('connection', socket => {
       let player2 = gameAwaitUsers[1]
 
       // Create a new battle
-      let battle = new Battle(new Player(player1), new Player(player2))
+      let battle = new Battle(player1, player2)
       // Create a random battle name (date as number)
       let date = new Date()
       const battleRoom = date.getTime()
@@ -93,12 +90,12 @@ io.on('connection', socket => {
       // Notify users by passing a battle name to both players
       for (let x in sockets) {
         let socket = sockets[x]
-        if (socket.idx === player1.username || socket.idx === player2.username) {
-          // xconsole.log('notified ' + socket.idx)
+        if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
           // Add to a battle
           socket.join(battleRoom)
+          let playerIdx = battle.players[0].username === socket.idx ? 0 : 1
           // Send a battle name to user
-          socket.emit('battleStarted', { message: { user: socket.idx, battle, attacker: player1.username } })
+          socket.emit('battleStarted', { message: { battleName: battle.name, playerIdx, state: battle.state } })
         }
       }
 
@@ -109,8 +106,6 @@ io.on('connection', socket => {
       // Add to battles array
       battles.push(battle)
     }
-    // console.log('await ' + JSON.stringify(gameAwaitUsers))
-    // console.log('battles ' + JSON.stringify(battles))
   })
 /* /// GAME REQUEST END /// */
 
@@ -122,18 +117,57 @@ io.on('connection', socket => {
       if (battle.name === +data.battleName) {
         // Loop battle users
         for (let player of battle.players) {
-          // Loop sockets
-          for (let socket of sockets) {
-            if (socket.idx === player.username) {
-              socket.emit('gameState', {
-                message: JSON.stringify(battle.getState(player.username))
-              })
+          // Attacker
+          if (player === battle.players[battle.state]) {
+            let target = data.shot
+            let defenderIdx = battle.state === 0 ? 1 : 0
+
+            let attackResult = {}
+            if (battle.players[defenderIdx].ships[target] === 'S') {
+              battle.players[defenderIdx].ships[target] = 'B'
+              attackResult.symbol = 'B'
+              attackResult.cell = target
+
+              let shipsAlive = false
+              for (let s of battle.players[defenderIdx].ships) {
+                if (s === 'S') {
+                  shipsAlive = true
+                  break
+                }
+              }
+              if (shipsAlive) {
+                io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has attacked! Cell: ${data.shot} - BOOM!` })
+              } else {
+                io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has won!` })
+
+                for (let x in sockets) {
+                  let socket = sockets[x]
+                  if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
+                    // Add to a battle
+                    socket.leave(battle.name)
+                  }
+                }
+              }
+            } else {
+              battle.players[defenderIdx].ships[target] = 'X'
+              attackResult.symbol = 'X'
+              attackResult.cell = target
+              io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has attacked! Cell: ${data.shot}` })
+            }
+            let tempState = battle.state === 0 ? 1 : 0
+            // Loop sockets
+            for (let x in sockets) {
+              let socket = sockets[x]
+              if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
+                let playerIdx = battle.players[0].username === socket.idx ? 0 : 1
+                socket.emit('gameState', { message: { battleName: battle.name, attackResult, playerIdx, state: tempState } })
+              }
             }
           }
         }
+        battle.state = battle.state === 0 ? 1 : 0
       }
     }
-    io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} made an attack! Cell: ${data.shot}` })
   })
 /* /// GAME LOGIC END /// */
 
