@@ -1,0 +1,20 @@
+<div>
+  <div class="userShop">
+    <h1>Shop</h1>
+    <div>
+        <span>{{ user.username }} [{{ lvl }}]</span>
+        <span class="lnr lnr-diamond"></span><span class="userShopDiamonds">{{ user.coins }}</span>
+    </div>
+    <div class="shopOptions">
+      <div class="option" *ngFor='let o of options'>
+          <img [src]="o.img" [alt]="o.type" />
+          <p>{{ o.type }}</p>
+          <button [disabled]="user.shopStyle === o.type ? true : o.price === 0 ? true : false" 
+            (click)="buy(user._id, o.type, o.price)" class="btn btn-warning"><span class="lnr lnr-diamond"></span>
+            {{ user.styleShop === o.type ? 'Paid' :
+              o.price === 0 ? 'free' : o.price }}
+          </button>
+      </div>
+    </div>
+  </div>
+</div>

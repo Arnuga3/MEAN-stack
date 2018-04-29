@@ -1,0 +1,17 @@
+<div>
+  <div class="scoreboard">
+    <h1>Score Board</h1>
+    <table>
+      <tr>
+        <th>Username</th>
+        <th>Nr. of games</th>
+        <th>Nr. of wins</th>
+      </tr>
+      <tr *ngFor="let user of users">
+        <td>{{ user.username }}</td>
+        <td>{{ user.games }}</td>
+        <td>{{ user.wins }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

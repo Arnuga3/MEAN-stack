@@ -41,6 +41,12 @@ export class UserService {
     const url = `${this.apiUrl}/user/${id}`;
     return this.http.get<User>(url, this.httpOptions);
   }
+
+  // Buy style
+  buyStyle(id: string, type: string): Observable<User> {
+    const url = `${this.apiUrl}/user/${id}/shop/${type}`;
+    return this.http.get<User>(url, this.httpOptions);
+  }
   
   // Get list of all users
   getUsers(): Observable<User[]> {
@@ -82,13 +88,22 @@ export class UserService {
   addUser(user: User){
     const url = `${this.apiUrl}/users`;
     console.log(`Registration request made to ${url}`)
+    console.log(JSON.stringify(user))
     return this.http.post<any>(url, {
       email: user.email,
       username: user.username,
-      password: user.password
+      password: user.password,
+      exp: user.exp,
+      wins: user.wins,
+      games: user.games,
+      coins: user.coins,
+      shopStyle: user.shopStyle
     }).subscribe(data => {
       console.log(`Response on addUser: ${data.message}`)
-      this.router.navigateByUrl('/gameport');
+      sessionStorage.setItem("MPGameUser", JSON.stringify(data.user))
+      console.log(`Response token: ${data.token}`)
+      localStorage.setItem('MLPGameToken', JSON.stringify(data.token))
+      this.router.navigateByUrl('/login');
     });
   }
 }

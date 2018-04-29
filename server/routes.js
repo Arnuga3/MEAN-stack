@@ -31,7 +31,7 @@ module.exports = app => {
     // Find a user by the username
     User.findOne({
       username: req.body.username
-    }).select('_id email username password').exec(function (err, user) {
+    }).select('_id email username password exp wins games coins shopStyle').exec(function (err, user) {
       if (err) throw err
       // A user with that username not found
       if (!user) {
@@ -66,7 +66,12 @@ module.exports = app => {
             user: JSON.stringify({
               id: user._id,
               username: user.username,
-              email: user.email
+              email: user.email,
+              exp: user.exp,
+              wins: user.wins,
+              games: user.games,
+              coins: user.coins,
+              shopStyle: user.shopStyle
             }),
             token: 'JWT ' + token
           })
@@ -80,10 +85,48 @@ module.exports = app => {
     res.json({ message: 'Hello' })
   })
 
-  apiRouter.get('/user/:id', authRequired, function (req, res) {
+  apiRouter.get('/user/:id', function (req, res) {
     User.findById(req.params.id, (err, user) => {
       if (err) return res.status(500).send(err)
       res.json(user)
+    })
+  })
+
+  apiRouter.get('/user/:id/shop/:type', function (req, res) {
+    // Styles available
+    const styles = [
+      {
+        type: 'standard',
+        price: 0
+      },
+      {
+        type: 'metal',
+        price: 10
+      },
+      {
+        type: 'pirate',
+        price: 20
+      }
+    ]
+    User.findById(req.params.id, (err, user) => {
+      if (err) return res.status(500).send(err)
+      for (let style of styles) {
+        if (style.type === req.params.type) {
+          if (user.coins >= style.price) {
+            let moneyLeft = user.coins - style.price
+            User.findByIdAndUpdate(
+              user.id, { $set: { coins: moneyLeft, shopStyle: style.type } }, (err) => {
+                if (err) return console.log(err)
+                console.log(user)
+              }
+            )
+            User.findById(user.id, (err, user) => {
+              if (err) return res.status(500).send(err)
+              res.json(user)
+            })
+          }
+        }
+      }
     })
   })
 
@@ -93,24 +136,28 @@ module.exports = app => {
   .post(function (req, res) {
     // Create a new User instance
     var user = new User()
-    user.email = req.query.email
-    user.username = req.query.username
-    user.password = req.query.password
+    user.email = req.body.email
+    user.username = req.body.username
+    user.password = req.body.password
+    user.exp = req.body.exp
+    user.wins = req.body.wins
+    user.games = req.body.games
+    user.coins = req.body.coins
+    user.shopStyle = req.body.shopStyle
     // Save to db
     user.save(function (err) {
       if (err) {
         // duplicate entry
-        if (err.code === 11000) return res.json({success: false, message: 'A user withthat username already exists.'})
+        if (err.code === 11000) return res.json({success: false, message: 'A user with that username already exists.'})
         else return res.send(err)
       }
-      res.json({message: 'User created!'})
+      res.json({message: 'User created!', user: user})
     })
   })
   // GET /api/users - get all users from DB
-  .get(authRequired, function (req, res) {
-    User.find(function (err, users) {
-      if (err) return res.send(err)
-      // Add users to a response
+  .get(function (req, res) {
+    User.find({}).sort({exp: 'desc'}).exec((err, users) => {
+      if (err) console.log(err)
       res.json(users)
     })
   })

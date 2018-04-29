@@ -16,8 +16,8 @@ export class RegisterComponent {
   constructor( private userService: UserService ) { }
 
   onSubmit() {
-    // console.log('Registration form submitted')
-    // console.log(JSON.stringify(this.regUser))
+    console.log('Registration form submitted')
+    console.log(JSON.stringify(this.regUser))
     this.userService.addUser(this.regUser)
   }
 

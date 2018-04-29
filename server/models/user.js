@@ -5,7 +5,12 @@ var bcrypt = require('bcrypt-nodejs')
 var UserSchema = new Schema({
   email: {type: String, required: true, index: {unique: true}},
   username: {type: String, required: true, index: {unique: true}},
-  password: {type: String, required: true, select: false}
+  password: {type: String, required: true, select: false},
+  exp: {type: Number, default: 0},
+  wins: {type: Number, default: 0},
+  games: {type: Number, default: 0},
+  coins: {type: Number, default: 0},
+  shopStyle: {type: String}
 })
 
 // hash the password

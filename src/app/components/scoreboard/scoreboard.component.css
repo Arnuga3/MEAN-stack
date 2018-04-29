@@ -1,0 +1,23 @@
+h1 {
+    font-size: 2.4em;
+    padding: 10px;
+}
+.scoreboard {
+    color: white;
+    background-color: rgb(97, 180, 212);
+    font-family: 'Bangers', cursive;
+}
+table {
+    margin: 10px;
+    list-style: none;
+    font-size: 1.2em;
+    list-style-type: decimal;
+    width: 100%;
+}
+table > td {
+    padding: 0 5px;
+}
+th {
+    color: #ffc107;
+    letter-spacing: 1px;
+}
