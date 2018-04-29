@@ -1,7 +1,21 @@
 <div class="field">
-  <img class="compassImg" src="../../../assets/compass3.png" alt="compass" />
   <div *ngFor="let cell of battlefield, index as i" class="cell"
-    (click)="selectedCell = i; attack(i)" [class.cellBoom]="showGameBoom(i)" [class.cellNone]="showGameNone(i)"
-    [class.cellShip]="showGameShip(i)">
-  </div>
+    (click)="selectedCell = i; attack(i)"
+    
+    [class.cellBgColMetal]="user.shopStyle === 'metal'"
+    [class.cellBgColPirate]="user.shopStyle === 'pirate'"
+    [class.cellBgCol]="user.shopStyle !== 'metal' && user.shopStyle !== 'pirate'"
+
+    [class.cellBoom]="showGameBoom(i) && user.shopStyle !== 'metal' && user.shopStyle !== 'pirate'"
+    [class.cellBoomMetal]="showGameBoom(i) && user.shopStyle === 'metal'"
+    [class.cellBoomPirate]="showGameBoom(i) && user.shopStyle === 'pirate'"
+
+    [class.cellNone]="showGameNone(i) && user.shopStyle !== 'metal' && user.shopStyle !== 'pirate'"
+    [class.cellNoneMetal]="showGameNone(i) && user.shopStyle === 'metal'"
+    [class.cellNonePirate]="showGameNone(i) && user.shopStyle === 'pirate'"
+
+    [class.cellShip]="showGameShip(i) && user.shopStyle !== 'metal' && user.shopStyle !== 'pirate'"
+    [class.cellShipMetal]="showGameShip(i) && user.shopStyle === 'metal'"
+    [class.cellShipPirate]="showGameShip(i) && user.shopStyle === 'pirate'"
+    ></div>
 </div>

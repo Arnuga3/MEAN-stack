@@ -16,6 +16,10 @@ export class GamePortComponent implements OnInit {
   player: User
   chatMsgs: String[]
   onlineUsersNum: number
+  gameIsOn = false
+  waiting = false
+  gameStateMsg = ''
+  lvl = 0
 
   constructor( 
     private userService: UserService,
@@ -31,6 +35,8 @@ export class GamePortComponent implements OnInit {
     this.onlineUsersNum = 0
     this.getOnlineUsers()
 
+    this.findPlayerLVL()
+
     ///
     // RESPONSES FROM WEBSOCKET
     ///
@@ -43,6 +49,18 @@ export class GamePortComponent implements OnInit {
     this.WSService.onNewMessage().subscribe(msg => {
       this.chatMsgs.push(this.createChatMsg(msg.message))
       console.log(`Message received: ${msg.message}`);
+      if (msg.message === 'Battle is finished.') {
+        alert('Game is over!')
+        setTimeout( () => { 
+          this.gameIsOn = false
+          this.gameStateMsg = ''
+          this.battlefield.reset()
+          this.userService.getUserById(this.player.id).subscribe(
+            user => this.player = user,
+            error => console.log("Error: " + error),
+            () => sessionStorage.setItem('MPGameUser', JSON.stringify(this.player)))
+        }, 1500 )
+      }
       this.scrollChatBox()
     })
     this.WSService.onPlayerCon().subscribe(msg => {
@@ -54,6 +72,7 @@ export class GamePortComponent implements OnInit {
       this.onlineUsersNum = +msg.message
       console.log(msg.message)
     })
+    // Game start response form ws
     this.WSService.onBattleStarted().subscribe(msg => {
       console.log(msg.message)
       // Saving a battle name to LocalStorage
@@ -65,11 +84,16 @@ export class GamePortComponent implements OnInit {
       if (playerIdx === state) {
         this.battlefield.canAttack = true
         this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
+        this.gameStateMsg = 'Your turn!'
       } else {
         this.battlefield.canAttack = false
         this.battlefield.battlefield = this.battlefield.actBatField
+        this.gameStateMsg = 'Wait for your turn!'
       }
+      this.waiting = false
+      this.gameIsOn = true
     })
+    // Game state response from ws
     this.WSService.onGameState().subscribe(msg => {
       console.log(msg.message)
       let attackResult = msg.message.attackResult
@@ -81,15 +105,29 @@ export class GamePortComponent implements OnInit {
         this.battlefield.canAttack = true
         setTimeout( () => { 
          this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
+         this.gameStateMsg = 'Your turn!'
         }, 1500 )
       } else {
         this.battlefield.actBatFieldEnemy[+attackResult.cell] = attackResult.symbol
         this.battlefield.canAttack = false
         setTimeout( () => { 
           this.battlefield.battlefield = this.battlefield.actBatField
+          this.gameStateMsg = 'Wait for your turn!'
         }, 1500 )
       }
     })
+  }
+
+  findPlayerLVL() {
+    this.lvl = Math.floor(this.player.exp / 100)
+  }
+
+  goToScoreborad() {
+    this.router.navigateByUrl('/scoreboard')
+  }
+
+  goToShop() {
+    this.router.navigateByUrl('/shop')
   }
 
   scrollChatBox() {
@@ -114,10 +152,13 @@ export class GamePortComponent implements OnInit {
   sendStartRequest() {
     let battlefield = this.battlefield.battlefield
     let player = {
+      id: this.player.id,
       username: this.player.username,
       ships: battlefield
     }
+    console.log('Check ' + JSON.stringify(this.player.id))
     this.WSService.sendGameRequest(player)
+    this.waiting = true
   }
 
   setPlayerCon() {

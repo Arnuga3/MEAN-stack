@@ -1,8 +1,22 @@
 <div class="gameport">
+    <div class="scoreboard" (click)="goToScoreborad()">
+        <span class="lnr lnr-users"></span>
+    </div>
+    <div class="shop" (click)="goToShop()">
+        <span class="lnr lnr-store"></span>
+    </div>
+    <div class="profile">
+        <span class="lnr lnr-user"></span>
+        <span>{{ player.username }} [{{ lvl }}]</span>
+        <span class="lnr lnr-diamond"></span><span>{{ player.coins }}</span>
+    </div>
     <app-battle></app-battle>
     <div>
-        <button (click)="generateRandomShips()" class="btn btn-outline-light">Random Ships</button>
-        <button (click)="sendStartRequest()" class="btn btn-warning">START</button>
+        <button (click)="generateRandomShips()" [class.hidden]="(waiting)" [class.hidden]="gameIsOn" class="btn btn-outline-light">Random Ships</button>
+        <button (click)="sendStartRequest()" [class.hidden]="(waiting)" [class.hidden]="gameIsOn"  class="btn btn-warning">START</button>
+        <span [class.hidden]="!(waiting)" class="lnr lnr-sync"></span>
+        <p [class.hidden]="!(waiting)" class="tiny">Waiting for other player ...</p>
+        <p [class.hidden]="!(gameIsOn)" class="stateMsg">{{ gameStateMsg }}</p>
     </div>
     <span>Users online: {{ onlineUsersNum }}</span>
     <div class="chat">

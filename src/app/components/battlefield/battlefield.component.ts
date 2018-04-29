@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { WebSocketService } from '../../services/websocket.service';
-import { Cell } from '../../classes/Cell'
 
 @Component({
   selector: 'app-battle',
@@ -13,7 +12,6 @@ export class BattleFieldComponent implements OnInit {
 
   public sideSize:number = 8
   public battlefield = new Array(this.sideSize * this.sideSize)
-  public battlefieldDisplay = new Array(this.sideSize * this.sideSize)
   public battlefieldSize: number = this.battlefield.length
   public actBatField = []
   public actBatFieldEnemy = new Array(this.sideSize * this.sideSize)
@@ -22,10 +20,21 @@ export class BattleFieldComponent implements OnInit {
   // For intersection checks - format [ [cells of one],[cells of one],[cells of one] ]
   public shipsArrAll = []
   public canAttack = true
+  public user = JSON.parse(sessionStorage.getItem('MPGameUser'))
 
   constructor( private userService: UserService, public WSService: WebSocketService ) { }
 
   ngOnInit() {
+    this.generateRandomShips()
+    this.populateBattlefield()
+  }
+
+  reset () {
+    this.battlefield = new Array(this.sideSize * this.sideSize)
+    this.actBatField = new Array(this.sideSize * this.sideSize)
+    this.actBatFieldEnemy = new Array(this.sideSize * this.sideSize)
+    this.shipsAll = []
+    this.shipsArrAll = []
     this.generateRandomShips()
     this.populateBattlefield()
   }
@@ -47,8 +56,8 @@ export class BattleFieldComponent implements OnInit {
     // Generating new ships
     this.saveShip(this.createShip(1))
     this.saveShip(this.createShip(2))
-    this.saveShip(this.createShip(3))
-    this.saveShip(this.createShip(4))
+    //this.saveShip(this.createShip(3))
+    //this.saveShip(this.createShip(4))
 
     this.populateBattlefield()
   }

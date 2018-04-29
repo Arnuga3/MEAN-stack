@@ -14,6 +14,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { UserService } from './services/user.service';
 import { WebSocketService } from './services/websocket.service';
 import { BattleFieldComponent } from './components/battlefield/battlefield.component';
+import { ScoreboardComponent } from './components/scoreboard/scoreboard.component';
+import { ShopComponent } from './components/shop/shop.component';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import { BattleFieldComponent } from './components/battlefield/battlefield.compo
     LoginComponent,
     GamePortComponent,
     RegisterComponent,
-    BattleFieldComponent
+    BattleFieldComponent,
+    ScoreboardComponent,
+    ShopComponent
   ],
   imports: [
     BrowserModule,

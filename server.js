@@ -138,8 +138,43 @@ io.on('connection', socket => {
               if (shipsAlive) {
                 io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has attacked! Cell: ${data.shot} - BOOM!` })
               } else {
-                io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has won!` })
+                // Save game results
+                var User = require('./server/models/user')
+                let winner = battle.players[battle.state]
 
+                let coins = 0
+                console.log('check ' + JSON.stringify(battle))
+                User.findById(winner.id, (err, user) => {
+                  if (err) return console.log(err)
+                  console.log(JSON.stringify(user))
+                  let games = user.games
+                  let wins = user.wins
+                  let diff = games / wins
+                  let lvl = user.exp / 10
+                  coins = 10 + lvl + (diff * 10)
+                  console.log('just made' + coins)
+                })
+
+                let defender = battle.players[defenderIdx]
+                // Increase experience +10
+                User.findByIdAndUpdate(
+                  defender.id, { $inc: { games: 1 } }, (err) => {
+                    if (err) return console.log(err)
+                    console.log(defender.id)
+                    console.log('inside 2 defender ' + coins)
+                  }
+                )
+
+                User.findByIdAndUpdate(
+                  winner.id, { $inc: { exp: 10, coins: 10, games: 1, wins: 1 } }, (err) => {
+                    if (err) return console.log(err)
+                    console.log(winner.id)
+                    console.log('inside 2' + coins)
+                  }
+                )
+
+                io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has won!` })
+                io.to(data.battleName).emit('newMessage', {message: `Battle is finished.`})
                 for (let x in sockets) {
                   let socket = sockets[x]
                   if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
@@ -147,6 +182,12 @@ io.on('connection', socket => {
                     socket.leave(battle.name)
                   }
                 }
+                for (let i in battles) {
+                  if (+battles[i].name === +data.battleName) {
+                    battles.splice(i, 1)
+                  }
+                }
+                break
               }
             } else {
               battle.players[defenderIdx].ships[target] = 'X'
@@ -186,7 +227,7 @@ io.on('connection', socket => {
       delete players[username]
       socket.emit('onSetPlayer', { message: `${username} reconnected` })
     } else {
-      socket.emit('onSetPlayer', { message: `Welcome to the game, ${username}! It is nice to have you back!` })
+      socket.emit('onSetPlayer', { message: `Welcome to the game, ${username}!` })
     }
     players[username] = socket
     io.emit('notification', {
