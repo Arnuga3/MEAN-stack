@@ -23,7 +23,10 @@ export class User implements IUser {
     this._shopStyle = shopStyle
   }
 
+<<<<<<< HEAD
   // Setters/Getters
+=======
+>>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   set id(id) {
     this._id = id
   }
