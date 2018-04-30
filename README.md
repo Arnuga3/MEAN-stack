@@ -3,28 +3,30 @@ Demo: <a href="https://youtu.be/Zpia3tEy3Sw">youtube</a>
 
 ## Stack:
 MEAN stack:
-Mongo
-Express
-Angular 4
-Node.js
+<ul>
+  <li>Mongo</li>
+  <li>Express</li>
+  <li>Angular 4</li>
+  <li>Node.js</li>
+</ul>
 
 ## Additional Technologies
-Bootstrap 4 css elements
-Free Linear icons
-Google Fonts
-Passport.js
+Bootstrap 4 css elements<br>
+Free Linear icons<br>
+Google Fonts<br>
+Passport.js<br>
 Sockets.io
 
 ## Game - Battleship
-Game:
-One player can play against another player.
-Multiple pairs of players can play at the same time.
-Users can see scores in scoreboard.
-Users can see how many players are online.
-Users can get experience and diamonds for wins.
-Users can buy themes for the battlefields.
-Users can see who joins the game and leaves it.
-Users can see the battle related actions of the battle they are in.
+<strong>Game:</strong>
+One player can play against another player.<br>
+Multiple pairs of players can play at the same time.<br>
+Users can see scores in scoreboard.<br>
+Users can see how many players are online.<br>
+Users can get experience and diamonds for wins.<br>
+Users can buy themes for the battlefields.<br>
+Users can see who joins the game and leaves it.<br>
+Users can see the battle related actions of the battle they are in.<br>
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.1.
 
