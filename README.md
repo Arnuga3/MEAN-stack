@@ -20,6 +20,7 @@ Sockets.io
 
 ## Game - Battleship
 <strong>Main game features:</strong><br>
+More ships can be added on a battlefield (only 2 are used for demo to speed up the game length)<br>
 One player can play against another player.<br>
 Multiple pairs of players can play at the same time.<br>
 Users can see scores in scoreboard.<br>
