@@ -1,4 +1,30 @@
 # MPGame
+Demo <a href="https://youtu.be/Zpia3tEy3Sw">youtube</a>
+
+## Stack:
+MEAN stack:
+Mongo
+Express
+Angular 4
+Node.js
+
+## Additional Technologies
+Bootstrap 4 css elements
+Free Linear icons
+Google Fonts
+Passport.js
+Sockets.io
+
+## Game - Battleship
+Game:
+One player can play against another player.
+Multiple pairs of players can play at the same time.
+Users can see scores in scoreboard.
+Users can see how many players are online.
+Users can get experience and diamonds for wins.
+Users can buy themes for the battlefields.
+Users can see who joins the game and leaves it.
+Users can see the battle related actions of the battle they are in.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.1.
 
