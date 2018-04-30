@@ -18,7 +18,7 @@ Passport.js<br>
 Sockets.io
 
 ## Game - Battleship
-<strong>Game:</strong>
+<strong>Main game features:</strong><br>
 One player can play against another player.<br>
 Multiple pairs of players can play at the same time.<br>
 Users can see scores in scoreboard.<br>
