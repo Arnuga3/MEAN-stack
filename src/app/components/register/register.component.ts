@@ -8,7 +8,7 @@ import { User } from '../../classes/User';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  
+  // New user instance, info binded from a view
   regUser: User = new User
   title: string = 'Welcome to MPGame';
   subtitle: string = 'Register and enjoy BATTLESHIP game.';

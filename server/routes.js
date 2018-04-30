@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken')
 
 var User = require('./models/user')
 
+// Session false
 const authRequired = passport.authenticate('jwt', { session: process.env.AUTH_SESSION })
 
 module.exports = app => {

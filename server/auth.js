@@ -1,3 +1,4 @@
+// Passport.js
 var passportJWT = require('passport-jwt')
 var User = require('./models/user')
 

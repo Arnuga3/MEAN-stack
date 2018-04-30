@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../classes/User';
-
+// Shop page
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
@@ -18,7 +18,7 @@ export class ShopComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    // Hard coded option in the shop
     this.options = [
       {
         type: 'standard',
@@ -36,7 +36,7 @@ export class ShopComponent implements OnInit {
         img: '../../../assets/pirateStyle.PNG'
       }
     ]
-
+    // Get user info from the sessionStorage
     this.user = JSON.parse(sessionStorage.getItem('MPGameUser'))
     this.findPlayerLVL()
   }
@@ -44,12 +44,13 @@ export class ShopComponent implements OnInit {
   findPlayerLVL() {
     this.lvl = Math.floor(this.user.exp / 100)
   }
-
+  // On purchase button click
   buy(id, type, price) {
     if (this.user.coins < price) {
       alert('Not enough diamonds!')
     } else {
       console.log('check' + id + ':' + type)
+      // Update the user info on callback
       this.userService.buyStyle(id, type).subscribe(
         user => this.user = user,
         error => console.log("Error: " + error),
@@ -57,7 +58,7 @@ export class ShopComponent implements OnInit {
       )
     }
   }
-
+  // Get user by id
   getUser(id: string) {
     this.userService.getUserById(id).subscribe(
       user => this.user = user,

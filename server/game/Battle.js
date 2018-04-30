@@ -1,3 +1,4 @@
+// Battle class
 class Battle {
   constructor (player1, player2) {
     this._players = [player1, player2]

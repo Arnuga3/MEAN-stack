@@ -31,11 +31,11 @@ export class WebSocketService {
   setPlayerCon(username: string) {
     this.socket.emit('setPlayer', { username });
   }
-
+  // Get a number of online users
   getUsersOnline() {
     this.socket.emit('getUsersOnline');
   }
-
+  // Game request to websocket
   sendGameRequest(player) {
     this.socket.emit('gameRequest', { player })
   }
@@ -71,7 +71,7 @@ export class WebSocketService {
       });
     });
   }
-
+  // Notify about the number of users online
   onUsersOnline() {
     return Observable.create(observer => {
       this.socket.on('usersOnline', msg => {
@@ -79,7 +79,7 @@ export class WebSocketService {
       });
     });
   }
-
+  // Notify when battle started
   onBattleStarted() {
     return Observable.create(observer => {
       this.socket.on('battleStarted', msg => {
@@ -87,7 +87,7 @@ export class WebSocketService {
       });
     });
   }
-
+  // Notify on game state change
   onGameState() {
     return Observable.create(observer => {
       this.socket.on('gameState', msg => {

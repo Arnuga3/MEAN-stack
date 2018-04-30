@@ -24,6 +24,7 @@ app.use(function (req, res, next) {
   next()
 })
 
+// Logger
 app.use(morgan('dev'))
 
 // Required for angular routing - redirecting to the index.html
@@ -122,12 +123,14 @@ io.on('connection', socket => {
             let target = data.shot
             let defenderIdx = battle.state === 0 ? 1 : 0
 
+            // Info for the client, S- ship, B- boom
             let attackResult = {}
             if (battle.players[defenderIdx].ships[target] === 'S') {
               battle.players[defenderIdx].ships[target] = 'B'
               attackResult.symbol = 'B'
               attackResult.cell = target
 
+              // Check if there are still not targeted ships
               let shipsAlive = false
               for (let s of battle.players[defenderIdx].ships) {
                 if (s === 'S') {
@@ -135,11 +138,13 @@ io.on('connection', socket => {
                   break
                 }
               }
+              // Notify when ship was hit
               if (shipsAlive) {
                 io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has attacked! Cell: ${data.shot} - BOOM!` })
               } else {
                 // Save game results
                 var User = require('./server/models/user')
+                // Player who won
                 let winner = battle.players[battle.state]
 
                 let coins = 0
@@ -150,13 +155,15 @@ io.on('connection', socket => {
                   let games = user.games
                   let wins = user.wins
                   let diff = games / wins
+                  // Level is calculated by dividing user's experience by 10
                   let lvl = user.exp / 10
+                  // Amount of coins is bigger if nr. of wins more comparing with total games played
                   coins = 10 + lvl + (diff * 10)
                   console.log('just made' + coins)
                 })
-
+                // User lost the game
                 let defender = battle.players[defenderIdx]
-                // Increase experience +10
+                // Increase games +1, no experience, no coins
                 User.findByIdAndUpdate(
                   defender.id, { $inc: { games: 1 } }, (err) => {
                     if (err) return console.log(err)
@@ -164,7 +171,7 @@ io.on('connection', socket => {
                     console.log('inside 2 defender ' + coins)
                   }
                 )
-
+                // Increase experience +10, games +1, coins +n for the winner
                 User.findByIdAndUpdate(
                   winner.id, { $inc: { exp: 10, coins: 10, games: 1, wins: 1 } }, (err) => {
                     if (err) return console.log(err)
@@ -172,9 +179,10 @@ io.on('connection', socket => {
                     console.log('inside 2' + coins)
                   }
                 )
-
+                // Game notification to both of the players, to their private channel
                 io.to(data.battleName).emit('newMessage', { message: `Battle(${data.battleName}) ${socket.idx} has won!` })
                 io.to(data.battleName).emit('newMessage', {message: `Battle is finished.`})
+                // Leave a private channel
                 for (let x in sockets) {
                   let socket = sockets[x]
                   if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
@@ -182,6 +190,7 @@ io.on('connection', socket => {
                     socket.leave(battle.name)
                   }
                 }
+                // Remove a battle from the battles array
                 for (let i in battles) {
                   if (+battles[i].name === +data.battleName) {
                     battles.splice(i, 1)
@@ -189,6 +198,7 @@ io.on('connection', socket => {
                 }
                 break
               }
+            // Nothing was hit
             } else {
               battle.players[defenderIdx].ships[target] = 'X'
               attackResult.symbol = 'X'
@@ -200,12 +210,14 @@ io.on('connection', socket => {
             for (let x in sockets) {
               let socket = sockets[x]
               if (socket.idx === battle.players[0].username || socket.idx === battle.players[1].username) {
+                // Send a game stste to both of the players
                 let playerIdx = battle.players[0].username === socket.idx ? 0 : 1
                 socket.emit('gameState', { message: { battleName: battle.name, attackResult, playerIdx, state: tempState } })
               }
             }
           }
         }
+        // Change the turn attacker is defender, defenders is an attacker
         battle.state = battle.state === 0 ? 1 : 0
       }
     }

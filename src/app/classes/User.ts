@@ -1,5 +1,5 @@
 import { IUser } from './../interfaces/IUser'
-
+// User class
 export class User implements IUser {
   _id: string
   _email: string
@@ -23,6 +23,7 @@ export class User implements IUser {
     this._shopStyle = shopStyle
   }
 
+  // Setters/Getters
   set id(id) {
     this._id = id
   }

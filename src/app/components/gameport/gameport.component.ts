@@ -16,25 +16,31 @@ export class GamePortComponent implements OnInit {
   player: User
   chatMsgs: String[]
   onlineUsersNum: number
+  // To display/ hide elements on a page depending on the game state
   gameIsOn = false
   waiting = false
+  // To hold a state message of the game
   gameStateMsg = ''
   lvl = 0
 
-  constructor( 
+  constructor(
+    // Services
     private userService: UserService,
     private WSService: WebSocketService,
+    // Router
     private router: Router ) { }
 
   ngOnInit() {
     
     let user = sessionStorage.getItem('MPGameUser')
     this.player = JSON.parse(user)
+    // Register a user in a websocket
     this.setPlayerCon()
+    // Chat messages
     this.chatMsgs = []
     this.onlineUsersNum = 0
     this.getOnlineUsers()
-
+    // Calc user lvl from the experience
     this.findPlayerLVL()
 
     ///
@@ -49,20 +55,25 @@ export class GamePortComponent implements OnInit {
     this.WSService.onNewMessage().subscribe(msg => {
       this.chatMsgs.push(this.createChatMsg(msg.message))
       console.log(`Message received: ${msg.message}`);
+      // Game is finished
       if (msg.message === 'Battle is finished.') {
         alert('Game is over!')
+        // Delay
         setTimeout( () => { 
           this.gameIsOn = false
           this.gameStateMsg = ''
           this.battlefield.reset()
+          // Update user info on the client
           this.userService.getUserById(this.player.id).subscribe(
             user => this.player = user,
             error => console.log("Error: " + error),
             () => sessionStorage.setItem('MPGameUser', JSON.stringify(this.player)))
         }, 1500 )
       }
+      // Scroll to bottom to see a new message
       this.scrollChatBox()
     })
+    // Response on finish of player setup in the websocket
     this.WSService.onPlayerCon().subscribe(msg => {
       this.chatMsgs.push(this.createChatMsg(msg.message))
       console.log(msg.message)
@@ -85,6 +96,7 @@ export class GamePortComponent implements OnInit {
         this.battlefield.canAttack = true
         this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
         this.gameStateMsg = 'Your turn!'
+      // For defender
       } else {
         this.battlefield.canAttack = false
         this.battlefield.battlefield = this.battlefield.actBatField
@@ -107,6 +119,7 @@ export class GamePortComponent implements OnInit {
          this.battlefield.battlefield = this.battlefield.actBatFieldEnemy
          this.gameStateMsg = 'Your turn!'
         }, 1500 )
+      // for defender
       } else {
         this.battlefield.actBatFieldEnemy[+attackResult.cell] = attackResult.symbol
         this.battlefield.canAttack = false
@@ -117,31 +130,31 @@ export class GamePortComponent implements OnInit {
       }
     })
   }
-
+  // Calc user lvl
   findPlayerLVL() {
     this.lvl = Math.floor(this.player.exp / 100)
   }
-
+  // Navigate to scoreboard
   goToScoreborad() {
     this.router.navigateByUrl('/scoreboard')
   }
-
+  // Navigate to shop
   goToShop() {
     this.router.navigateByUrl('/shop')
   }
-
+  // Scroll the chat window to bottom
   scrollChatBox() {
     var chatBox = document.querySelector('.chat');
     chatBox.scrollTop = chatBox.scrollHeight;
   }
-
+  // Create a specific format for the chat message with time
   createChatMsg(msg) {
     let date = new Date()
     let h = date.getHours() <= 9 ? '0' + date.getHours() : date.getHours()
     let m = date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes()
     return `${h}:${m} ${msg}`
   }
-
+  // Create a new set of ships trigger used on button in view
   generateRandomShips() {
     this.battlefield.generateRandomShips()
   }
@@ -150,6 +163,7 @@ export class GamePortComponent implements OnInit {
   // REQUESTS TO WEBSOCKET SERVICE
   ///
   sendStartRequest() {
+    // Send id, username and ships to websocket - trigger on button on view
     let battlefield = this.battlefield.battlefield
     let player = {
       id: this.player.id,
@@ -160,7 +174,7 @@ export class GamePortComponent implements OnInit {
     this.WSService.sendGameRequest(player)
     this.waiting = true
   }
-
+  // Request to set a player on websockets
   setPlayerCon() {
     console.log('Setting player in ws request made')
     this.WSService.setPlayerCon(this.player.username)
@@ -169,7 +183,7 @@ export class GamePortComponent implements OnInit {
   sendMessage() {
     this.WSService.sendMessage();
   }
-
+  // Gets a number of users from websocket
   getOnlineUsers() {
     this.WSService.getUsersOnline();
   }
@@ -177,6 +191,7 @@ export class GamePortComponent implements OnInit {
   ///
   // REQUESTS TO USER SERVICE
   ///
+  // Get all users
   getUsers() {
     this.userService.getUsers().subscribe(
       users => this.users = users,
