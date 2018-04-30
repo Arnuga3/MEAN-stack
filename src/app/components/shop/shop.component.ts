@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { User } from '../../classes/User';
-<<<<<<< HEAD
 // Shop page
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
@@ -22,11 +18,7 @@ export class ShopComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-<<<<<<< HEAD
     // Hard coded option in the shop
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
     this.options = [
       {
         type: 'standard',
@@ -44,11 +36,7 @@ export class ShopComponent implements OnInit {
         img: '../../../assets/pirateStyle.PNG'
       }
     ]
-<<<<<<< HEAD
     // Get user info from the sessionStorage
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
     this.user = JSON.parse(sessionStorage.getItem('MPGameUser'))
     this.findPlayerLVL()
   }
@@ -56,20 +44,13 @@ export class ShopComponent implements OnInit {
   findPlayerLVL() {
     this.lvl = Math.floor(this.user.exp / 100)
   }
-<<<<<<< HEAD
   // On purchase button click
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   buy(id, type, price) {
     if (this.user.coins < price) {
       alert('Not enough diamonds!')
     } else {
       console.log('check' + id + ':' + type)
-<<<<<<< HEAD
       // Update the user info on callback
-=======
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
       this.userService.buyStyle(id, type).subscribe(
         user => this.user = user,
         error => console.log("Error: " + error),
@@ -77,11 +58,7 @@ export class ShopComponent implements OnInit {
       )
     }
   }
-<<<<<<< HEAD
   // Get user by id
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   getUser(id: string) {
     this.userService.getUserById(id).subscribe(
       user => this.user = user,

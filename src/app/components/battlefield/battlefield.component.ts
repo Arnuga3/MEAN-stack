@@ -13,13 +13,7 @@ export class BattleFieldComponent implements OnInit {
   public sideSize:number = 8
   public battlefield = new Array(this.sideSize * this.sideSize)
   public battlefieldSize: number = this.battlefield.length
-<<<<<<< HEAD
-  // User local action field
   public actBatField = []
-  // Enemy loacl action field
-=======
-  public actBatField = []
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   public actBatFieldEnemy = new Array(this.sideSize * this.sideSize)
   // For boundary checks - format [cells of all]
   public shipsAll = []
@@ -34,29 +28,15 @@ export class BattleFieldComponent implements OnInit {
     this.generateRandomShips()
     this.populateBattlefield()
   }
-<<<<<<< HEAD
-  // Reset state of battlefield
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   reset () {
     this.battlefield = new Array(this.sideSize * this.sideSize)
     this.actBatField = new Array(this.sideSize * this.sideSize)
     this.actBatFieldEnemy = new Array(this.sideSize * this.sideSize)
-<<<<<<< HEAD
-    // Empty arrays
-=======
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
     this.shipsAll = []
     this.shipsArrAll = []
     this.generateRandomShips()
     this.populateBattlefield()
   }
-<<<<<<< HEAD
-  // Place ships on the battlefield, E- empty, S- ship
-=======
-
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   populateBattlefield () {
     this.battlefield.fill('E', 0, this.battlefieldSize)
     this.actBatFieldEnemy.fill('E', 0, this.battlefieldSize)
@@ -202,10 +182,6 @@ export class BattleFieldComponent implements OnInit {
     this.shipsAll.push(...ship)
   }
 
-<<<<<<< HEAD
-  // Are called in a view to assign a css class to a cell
-=======
->>>>>>> 533ebbdcd1f0cd2c784269658376967500444a5c
   showGameShip(val) {
     if (this.battlefield[val] === 'S') return true
     else return false
