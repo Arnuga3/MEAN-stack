@@ -1,7 +1,8 @@
 # MPGame
-Demo: <a href="https://youtu.be/Zpia3tEy3Sw">youtube</a>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Zpia3tEy3Sw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+Demo:
+<a href="https://youtu.be/Zpia3tEy3Sw">
+  <img src="https://www.youtube.com/upload_thumbnail?v=Zpia3tEy3Sw&t=2&ts=1525045961739" alt="demo preview" />
+</a>
 
 ## Stack:
 MEAN stack:
