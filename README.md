@@ -1,5 +1,5 @@
 # MPGame
-Demo <a href="https://youtu.be/Zpia3tEy3Sw">youtube</a>
+Demo: <a href="https://youtu.be/Zpia3tEy3Sw">youtube</a>
 
 ## Stack:
 MEAN stack:
